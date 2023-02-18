@@ -1,0 +1,66 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2022 17:54:02 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Mcu\51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.
+                    -lst) TABS(3) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          sbit Led1=P2^0;
+   4          sbit Led8=P2^7;
+   5          
+   6          void DelayMs(unsigned char n)
+   7          {
+   8   1         unsigned char i,j;
+   9   1         for(i=0;i<n;i++)
+  10   1            for(j=0;j<123;j++);
+  11   1      }
+  12          void Working()
+  13          {
+  14   1         Led1=0;
+  15   1         DelayMs(500);
+  16   1         Led1=1;
+  17   1         DelayMs(500);
+  18   1      }
+  19          //中断相关函数
+  20           void Init_INT1()   //中断初始化函数 
+  21           {
+  22   1            IT1=0;
+  23   1            EX1=1;
+  24   1            EA=1;
+  25   1       }
+  26          
+  27           void ServiceInt1() interrupt 2  //中断服务函数
+  28           {
+  29   1         Led8=~Led8;
+  30   1      ////   DelayMs(10000);
+  31   1      ////   Led8=1;
+  32   1       }
+  33           
+  34          //
+  35          void main()
+  36          {
+  37   1          Init_INT1();  
+  38   1         while(1)
+  39   1         {
+  40   2         Working();
+  41   2         }
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

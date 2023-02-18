@@ -1,0 +1,128 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              12/22/2022 21:34:56 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Mcu\51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.
+                    -lst) TABS(3) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Digital.h"
+   3          
+   4          sbit S4=P3^0;
+   5          sbit S5=P3^1;
+   6          
+   7          unsigned char TimerCount;
+   8          unsigned char t_feng=0;
+   9          unsigned char t_miao=0;
+  10          unsigned char t_haomiao=0;
+  11          
+  12          void delayk(unsigned char t)
+  13          {
+  14   1         while(t--);
+  15   1      }
+  16          //=============定时器初始化函数==========
+  17          void Timer_Init()
+  18          {
+  19   1         TMOD=0x01;
+  20   1         TF0=0;
+  21   1         TR0=1;
+  22   1         TL0=(65536-50000)%256;
+  23   1         TH0=(65536-50000)/256;
+  24   1         
+  25   1         ET0=1;
+  26   1         EA=1;
+  27   1      }
+  28          //===========================================
+  29          
+  30          void  SmgDispaly()
+  31          {
+  32   1         Dispaly(8,t_haomiao%10);
+  33   1         delayk(255);
+  34   1         Dispaly(7,t_haomiao/10);
+  35   1         delayk(255);
+  36   1         Dispaly(6,16);
+  37   1         delayk(255);
+  38   1         Dispaly(5,t_miao%10);
+  39   1         delayk(255);
+  40   1         Dispaly(4,t_miao/10);
+  41   1         delayk(255);
+  42   1         Dispaly(3,16);
+  43   1         delayk(255);
+  44   1         Dispaly(2,t_feng%10);
+  45   1         delayk(255);
+  46   1         Dispaly(1,t_feng/10);
+  47   1         delayk(255);
+  48   1      }
+  49          
+  50          //==============中断服务函数================
+  51          void Timer_Servor() interrupt 1  
+  52          {
+  53   1         TL0=(65536-50000)%256;
+  54   1         TH0=(65536-50000)/256;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/22/2022 21:34:56 PAGE 2   
+
+  55   1         
+  56   1         t_haomiao++;
+  57   1         if(t_haomiao>=20)
+  58   1         {
+  59   2            t_haomiao=0;
+  60   2            t_miao++;
+  61   2            if(t_miao>=60)
+  62   2            {
+  63   3            t_miao=0;
+  64   3            t_feng++;
+  65   3            }
+  66   2         }
+  67   1      }
+  68          //=================================================
+  69          void main()
+  70          {
+  71   1         Timer_Init();
+  72   1         while(1)
+  73   1         {
+  74   2            SmgDispaly();
+  75   2            if(S4==0)
+  76   2            {
+  77   3            delayk(100);
+  78   3               if(S4==0)
+  79   3               {
+  80   4                  t_haomiao=0;
+  81   4                  t_miao=0;
+  82   4                  t_feng=0;
+  83   4                  while(S4==0)
+  84   4                  {
+  85   5                  SmgDispaly();
+  86   5                  }}
+  87   3            }
+  88   2            
+  89   2            if(S5==0)
+  90   2            {
+  91   3            delayk(100);
+  92   3               if(S5==0)
+  93   3               {
+  94   4               TR0=~TR0;
+  95   4                  while(S5==0)
+  96   4                  {
+  97   5                  SmgDispaly();
+  98   5                  }
+  99   4               }
+ 100   3            }
+ 101   2         }
+ 102   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    274    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
